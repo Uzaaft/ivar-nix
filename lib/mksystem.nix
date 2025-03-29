@@ -11,11 +11,6 @@
   wsl ? false,
 }: let
   # True if this is a WSL system.
-  isWSL = wsl;
-
-  # True if Linux, which is a heuristic for not being Darwin.
-  isLinux = !darwin && !isWSL;
-
   # The config files for this system.
   machineConfig = ../machines/${name}.nix;
   userOSConfig =
@@ -40,13 +35,6 @@ in
     inherit system;
 
     modules = [
-      # Bring in determinate nix module if none darwin system
-      (
-        if darwin
-        then {}
-        else inputs.determinate.nixosModules.default
-      )
-
       # Apply our overlays. Overlays are keyed by system type so we have
       # to go through and apply our system type. We do this first so
       # the overlays are available globally.
@@ -55,13 +43,6 @@ in
       # Allow unfree packages.
       {nixpkgs.config.allowUnfree = true;}
 
-      # Bring in WSL if this is a WSL build
-      (
-        if isWSL
-        then inputs.nixos-wsl.nixosModules.wsl
-        else {}
-      )
-
       machineConfig
       userOSConfig
       home-manager.home-manager
@@ -69,7 +50,6 @@ in
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.users.${user} = import userHMConfig {
-          isWSL = isWSL;
           inputs = inputs;
         };
       }
@@ -81,7 +61,6 @@ in
           currentSystem = system;
           currentSystemName = name;
           currentSystemUser = user;
-          isWSL = isWSL;
           inputs = inputs;
         };
       }

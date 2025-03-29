@@ -4,7 +4,6 @@
   pkgs,
   ...
 }: let
-  isLinux = pkgs.stdenv.isLinux;
 in {
   # Home-manager 22.11 requires this be set. We never set it so we have
   # to use the old state version.
@@ -24,6 +23,8 @@ in {
   # Packages I always want installed.
   # TODO: Add in missing stuff
   home.packages = [
+    # GUI
+    pkgs.ghostty
     # CLI tools
     pkgs.bat
     pkgs.eza

@@ -18,9 +18,7 @@
     ...
   } @ inputs: let
     # Overlays is the list of overlays we want to apply from flake inputs.
-    overlays = [
-      inputs.ghostty.overlays.default
-    ];
+    overlays = [];
 
     mkSystem = import ./lib/mksystem.nix {
       inherit overlays nixpkgs inputs;
