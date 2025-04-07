@@ -1,5 +1,5 @@
 {
-  description = "Example nix-os system flake for Ivar Oeftedal";
+  description = "Example nix-darwin system flake";
 
   inputs = {
     # We use the unstable nixpkgs repo for some packages.
@@ -10,11 +10,19 @@
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+
+    darwin = {
+      url = "github:LnL7/nix-darwin/nix-darwin-24.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
+    home-manager,
+    darwin,
     ...
   } @ inputs: let
     # Overlays is the list of overlays we want to apply from flake inputs.

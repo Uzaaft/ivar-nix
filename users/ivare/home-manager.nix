@@ -1,4 +1,8 @@
-{inputs, ...}: {
+{
+  isWSL,
+  inputs,
+  ...
+}: {
   config,
   lib,
   pkgs,
@@ -14,55 +18,64 @@ in {
   #---------------------------------------------------------------------
   # Packages
   #---------------------------------------------------------------------
-  programs.git = {
-    enable = true;
-    userName = ""; # TODO: Fill this
-    userEmail = ""; #TODO: Fill this
-  };
-
   # Packages I always want installed.
-  # TODO: Add in missing stuff
   home.packages = [
-    # GUI
-    pkgs.ghostty
-    # CLI tools
-    pkgs.bat
-    pkgs.eza
-    pkgs.fd
-    pkgs.fzf
-    pkgs.gh
-    pkgs.ripgrep
-    pkgs.curl
-    pkgs.wget
-    pkgs.fastfetch
-    pkgs.onefetch
+    # Fallback shell
+    pkgs.zsh
     # Nix stuff
     pkgs.alejandra
     pkgs.nixd
     # TUI
     pkgs.lazygit
+    pkgs.greetd.tuigreet
+
+    # non-darwin packages
   ];
 
   #---------------------------------------------------------------------
   # dotfiles
   #---------------------------------------------------------------------
   home.file = {
-    # TODO:
-    # Add in .zshenv
+    ".zshenv" = {
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/repositories/github.com/ivare/dotfiles/config/.zshenv";
+    };
   };
 
+  # TODO: FIX ALL PATHS HERE
   xdg.configFile = {
-    # TODO: Add in astronvim/neovim
-    # nvim = {};
+    # Always include these
+    ghostty = {
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/repositories/github.com/ivare/dotfiles/config/ghostty";
+      recursive = true;
+    };
+    nvim = {
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/repositories/github.com/ivare/dotfiles/config/nvim";
+    };
+    niri = {
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/repositories/github.com/ivare/dotfiles/config/niri";
+    };
   };
 
   #---------------------------------------------------------------------
   # Programs
   #---------------------------------------------------------------------
+  programs.neovim = {
+    enable = true;
+  };
+
+  programs.git = {
+    enable = true;
+
+    extraConfig = {};
+  };
 
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
-    config = {whitelist = {};};
+    config = {
+      whitelist = {
+        # Should add the following: polymath, stormwater-ai, ivare
+      };
+    };
   };
 }
